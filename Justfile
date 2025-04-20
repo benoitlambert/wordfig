@@ -2,7 +2,7 @@
 
 # Lancer l'application
 up:
-    cd app && docker-compose up -d
+    cd app && docker-compose --env-file ../.env up -d
 
 # Arrêter l'application
 down:
@@ -28,3 +28,10 @@ clean:
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         cd app && docker-compose down -v
     fi
+
+## NGINX
+#
+# Adapter le fichier de config par rapport aux variables d'environnement
+
+nginx-config:
+    cd config && ./generate-nginx-config.sh

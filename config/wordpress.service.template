@@ -1,0 +1,36 @@
+[Unit]
+Description=WordPress Docker Containers
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=${USER}
+Group=${GROUP}
+WorkingDirectory=${WORKING_DIRECTORY}
+
+
+# Isolation améliorée
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+MemoryLimit=1.2G
+CPUQuota=50%
+TasksMax=100
+IOWeight=100
+
+# Démarrage des conteneurs
+ExecStart=/usr/bin/docker-compose ${WORKING_DIRECTORY}.env up
+ExecStop=/usr/bin/docker-compose down
+
+# Redémarrage
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
