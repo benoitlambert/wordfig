@@ -35,20 +35,13 @@ set -a
 source "$ENV_FILE"
 set +a
 
-# Créer la liste des variables définies dans .env (ignorer les commentaires et lignes vides)
-echo "📝 Variables disponibles pour la substitution:"
 ENV_VARS=$(grep -v '^#' "$ENV_FILE" | grep '=' | sed 's/=.*//' | sort)
-
-# Afficher les variables disponibles
-for VAR in $ENV_VARS; do
-    echo "  - $VAR"
-done
 
 # Préparer la liste des variables à remplacer pour envsubst
 VARS_TO_REPLACE=$(printf '${%s} ' $ENV_VARS)
 
 # Remplacer les variables dans le template
-echo -e "\n🔨 Génération de $OUTPUT_FILE à partir du template..."
+echo -e "🔨 Génération de $OUTPUT_FILE à partir du template..."
 envsubst "$VARS_TO_REPLACE" < "$TEMPLATE_FILE" > "$OUTPUT_FILE"
 
 # Vérifier si la génération a réussi
@@ -56,7 +49,7 @@ if [ $? -eq 0 ]; then
     echo "✅ Fichier généré avec succès dans $OUTPUT_FILE"
 
     # Trouver les variables effectivement utilisées dans le template
-    echo -e "\n📊 Variables effectivement remplacées:"
+    echo -e "📊 Variables effectivement remplacées:"
     USED_VARS=0
     for VAR in $ENV_VARS; do
         if grep -q "\${$VAR}" "$TEMPLATE_FILE"; then

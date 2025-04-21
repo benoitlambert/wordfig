@@ -10,13 +10,13 @@ limit_conn_zone $binary_remote_addr zone=wp_conn:10m;
 # Configuration pour WordPress
 server {
     listen 443 ssl http2;
-    server_name sacrechoeurnamur.be www.sacrechoeurnamur.be;
+    server_name ${DOMAIN_NAME} www.${DOMAIN_NAME};
 
     # Configuration SSL
-    ssl_certificate /etc/letsencrypt/live/www.sacrechoeurnamur.be/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/www.sacrechoeurnamur.be/privkey.pem; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/sacrechoeurnamur.be/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/sacrechoeurnamur.be/privkey.pem; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/www.${DOMAIN_NAME}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.${DOMAIN_NAME}/privkey.pem; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem; # managed by Certbot
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
@@ -26,7 +26,7 @@ server {
     
     # Gestion optimisée des fichiers statiques
     location ~* \.(css|js|jpg|jpeg|png|gif|ico|woff|woff2|ttf|svg|eot|webp)$ {
-        proxy_pass http://127.0.0.1:8763;
+        proxy_pass http://127.0.0.1:${WP_PORT};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -46,7 +46,7 @@ server {
         limit_req zone=wp_limit burst=5 nodelay;
         limit_conn wp_conn 3;
         
-        proxy_pass http://127.0.0.1:8763;
+        proxy_pass http://127.0.0.1:${WP_PORT};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -65,7 +65,7 @@ server {
         limit_conn wp_conn 5;
         
         # Proxy vers le container WordPress
-        proxy_pass http://127.0.0.1:8763;
+        proxy_pass http://127.0.0.1:${WP_PORT};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -77,7 +77,7 @@ server {
     
     # Fallback pour les fichiers statiques
     location @wordpress {
-        proxy_pass http://127.0.0.1:8763;
+        proxy_pass http://127.0.0.1:${WP_PORT};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -100,7 +100,7 @@ server {
         if ($request_filename !~ "index\.php$") {
             return 403;
         }
-        proxy_pass http://127.0.0.1:8763;
+        proxy_pass http://127.0.0.1:${WP_PORT};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -152,7 +152,7 @@ server {
 # Redirection HTTP vers HTTPS
 server {
     listen 80;
-    server_name sacrechoeurnamur.be www.sacrechoeurnamur.be;
+    server_name ${DOMAIN_NAME} www.${DOMAIN_NAME};
     
     location / {
         return 301 https://$host$request_uri;

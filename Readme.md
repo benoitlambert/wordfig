@@ -17,9 +17,7 @@ docker-compose --env-file ../.env up -d
 Generate nginx.config file based on template and .env file
 
 ```bash
-cd $app/config
-chmod +x generate-nginx-config.sh
-./generate-nginx-config.sh
+just nginx-config
 ```
 
 Simlink to specific conf file
@@ -27,7 +25,11 @@ Simlink to specific conf file
 ln -s $app/config/nginx.config /etc/nginx/sites-enabled/$app_name
 ```
 
-# cgroups
+# Systemd 
 
-Cgroups are there to put limit on CPU usage
+```bash
+sudo systemctl enable wordpress-docker.service
+sudo systemctl start wordpress-docker.service
+```
+
 

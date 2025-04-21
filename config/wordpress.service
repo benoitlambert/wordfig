@@ -6,9 +6,9 @@ Requires=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-User=wordpress_user
+User=scn_public_user
 Group=wordpress_docker
-WorkingDirectory=/opt/scn-public/prod/
+WorkingDirectory=/opt/scn-public/prod/app
 
 
 # Isolation améliorée
@@ -25,8 +25,9 @@ TasksMax=100
 IOWeight=100
 
 # Démarrage des conteneurs
-ExecStart=/usr/bin/docker-compose /opt/scn-public/prod/.env up
-ExecStop=/usr/bin/docker-compose down
+ExecStart=/usr/bin/docker compose --env-file /opt/scn-public/prod/.env up
+ExecStop=/usr/bin/docker compose down
+
 
 # Redémarrage
 Restart=on-failure

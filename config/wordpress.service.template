@@ -8,7 +8,7 @@ Type=oneshot
 RemainAfterExit=yes
 User=${USER}
 Group=${GROUP}
-WorkingDirectory=${WORKING_DIRECTORY}
+WorkingDirectory=${WORKING_DIRECTORY}/app
 
 
 # Isolation améliorée
@@ -25,8 +25,9 @@ TasksMax=100
 IOWeight=100
 
 # Démarrage des conteneurs
-ExecStart=/usr/bin/docker-compose ${WORKING_DIRECTORY}.env up
-ExecStop=/usr/bin/docker-compose down
+ExecStart=/usr/bin/docker compose --env-file ${WORKING_DIRECTORY}/.env up
+ExecStop=/usr/bin/docker compose down
+
 
 # Redémarrage
 Restart=on-failure

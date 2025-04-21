@@ -1,4 +1,7 @@
-
+#  Content
+#
+**/wp*
+**/wp-content/
 # env
 
 .env
