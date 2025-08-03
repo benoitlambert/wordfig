@@ -77,5 +77,4 @@ nginx-change:
 
 # Daemon enable and load 
 activate-service: 
-    #sudo systemctl enable $SERVICE_NAME
     sudo systemctl start $SERVICE_NAME
