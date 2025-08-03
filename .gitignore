@@ -14,3 +14,4 @@
 .vim*
 
 config/nginx.config
+config.wordpress.config
